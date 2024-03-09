@@ -319,7 +319,9 @@ fn analyze_simple(cfg: &JsControlFlowGraph, signals: &mut UnreachableRanges) {
                                 queue.push_back((handler.target, Some(handlers)));
                             }
                         }
-                    } else if reachable_blocks.insert(block.index()) {
+                    }
+
+                    if reachable_blocks.insert(block.index()) {
                         // Insert an edge if this jump is reachable
                         queue.push_back((block, handlers));
                     }
@@ -566,7 +568,7 @@ fn handle_jump<'cfg>(
     block: BlockId,
     finally_fallthrough: bool,
 ) {
-    // If this jump is exiting a finally clause and and this path is visiting
+    // If this jump is exiting a finally clause and this path is visiting
     // an exception handlers chain
     if finally_fallthrough && path.exception_handlers.is_some() {
         // Jump towards the corresponding block if there are pending exception

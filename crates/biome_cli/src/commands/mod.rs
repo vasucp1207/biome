@@ -5,7 +5,7 @@ use crate::logging::LoggingKind;
 use crate::{CliDiagnostic, CliSession, LoggingLevel, VERSION};
 use biome_console::{markup, Console, ConsoleExt};
 use biome_diagnostics::{Diagnostic, PrintDiagnostic};
-use biome_fs::RomePath;
+use biome_fs::BiomePath;
 use biome_service::configuration::vcs::PartialVcsConfiguration;
 use biome_service::configuration::{
     css::partial_css_formatter, javascript::partial_javascript_formatter,
@@ -259,6 +259,9 @@ pub enum BiomeCommand {
         /// Allows to set a custom path when discovering the configuration file `biome.json`
         #[bpaf(env("BIOME_CONFIG_PATH"), long("config-path"), argument("PATH"))]
         Option<PathBuf>,
+        /// Bogus argument to make the command work with vscode-languageclient
+        #[bpaf(long("stdio"), hide, hide_usage, switch)]
+        bool,
     ),
     /// It updates the configuration when there are breaking changes
     #[bpaf(command)]
@@ -327,7 +330,7 @@ impl BiomeCommand {
             | BiomeCommand::Ci { cli_options, .. }
             | BiomeCommand::Format { cli_options, .. }
             | BiomeCommand::Migrate { cli_options, .. } => cli_options.colors.as_ref(),
-            BiomeCommand::LspProxy(_)
+            BiomeCommand::LspProxy(_, _)
             | BiomeCommand::Start(_)
             | BiomeCommand::Stop
             | BiomeCommand::Init(_)
@@ -350,7 +353,7 @@ impl BiomeCommand {
             | BiomeCommand::Start(_)
             | BiomeCommand::Stop
             | BiomeCommand::Explain { .. }
-            | BiomeCommand::LspProxy(_)
+            | BiomeCommand::LspProxy(_, _)
             | BiomeCommand::RunServer { .. }
             | BiomeCommand::PrintSocket => false,
         }
@@ -373,7 +376,7 @@ impl BiomeCommand {
             | BiomeCommand::Stop
             | BiomeCommand::Init(_)
             | BiomeCommand::Explain { .. }
-            | BiomeCommand::LspProxy(_)
+            | BiomeCommand::LspProxy(_, _)
             | BiomeCommand::RunServer { .. }
             | BiomeCommand::PrintSocket => false,
         }
@@ -387,7 +390,7 @@ impl BiomeCommand {
             | BiomeCommand::Ci { cli_options, .. }
             | BiomeCommand::Migrate { cli_options, .. } => cli_options.log_level.clone(),
             BiomeCommand::Version(_)
-            | BiomeCommand::LspProxy(_)
+            | BiomeCommand::LspProxy(_, _)
             | BiomeCommand::Rage(..)
             | BiomeCommand::Start(_)
             | BiomeCommand::Stop
@@ -406,7 +409,7 @@ impl BiomeCommand {
             | BiomeCommand::Migrate { cli_options, .. } => cli_options.log_kind.clone(),
             BiomeCommand::Version(_)
             | BiomeCommand::Rage(..)
-            | BiomeCommand::LspProxy(_)
+            | BiomeCommand::LspProxy(_, _)
             | BiomeCommand::Start(_)
             | BiomeCommand::Stop
             | BiomeCommand::Init(_)
@@ -471,13 +474,13 @@ fn resolve_manifest(cli_session: &CliSession) -> Result<(), WorkspaceError> {
     )?;
 
     if let Some(result) = result {
-        let rome_path = RomePath::new(result.file_path);
+        let biome_path = BiomePath::new(result.file_path);
         workspace.open_project(OpenProjectParams {
-            path: rome_path.clone(),
+            path: biome_path.clone(),
             content: result.content,
             version: 0,
         })?;
-        workspace.update_current_project(UpdateProjectParams { path: rome_path })?;
+        workspace.update_current_project(UpdateProjectParams { path: biome_path })?;
     }
 
     Ok(())

@@ -331,18 +331,21 @@ When releasing a new version of a Biome, follow these steps:
    See our [versioning guide](https://biomejs.dev/internals/versioning/) for more details.
 
 1. [ ] Rename `Unreleased` to `<version> (iso-date)` in the [changelog](./CHANGELOG.md).
-   Then update the website using `BIOME_VERSION=<version> cargo codegen-website`.
 
 1. [ ] Update `version` in [Biome's `package.json`](./packages/@biomejs/biome/package.json) if applicable.
 
-2. [ ] **Update to the same `version` in all crates** if you publish crates. (`Cargo.toml` and `crates/**/Cargo.toml`)
+1. [ ] **Update to the same `version` in all crates** if you publish crates. (`Cargo.toml` and `crates/**/Cargo.toml`)
 
-3. [ ] Linter rules have a `version` metadata directly defined in their implementation.
+1. [ ] Linter rules have a `version` metadata directly defined in their implementation.
    This field is set to `next` for newly created rules.
    This field must be updated to the new version.
    Then execute `just gen-lint`.
 
-4. [ ] Once the PR is merged, the CI will trigger the `Release: *` workflows. Once these workflows finish compiling the final artefact, **they need to be approved manually**.
+1. [ ] Update the website with the new version number:
+   `BIOME_VERSION=<version> cargo codegen-website`.
+   This will also copy the configuration schema in the right place.
+
+1. [ ] Once the PR is merged, the CI will trigger the `Release: *` workflows. Once these workflows finish compiling the final artefact, **they need to be approved manually**.
 
 ## Resources
 
@@ -363,6 +366,7 @@ Members are listed in alphabetical order. Members are free to use the full name,
 
 ### Core Contributors team
 
+- [Arend van Beelen @arendjr](https://github.com/arendjr)
 - [Daiki Nishikawa @nissy-dev](https://github.com/nissy-dev)
 - [Denis Bezrukov @denbezrukov](https://github.com/denbezrukov)
 - [Hiroki Ihoriya @unvalley](https://github.com/unvalley)
@@ -371,7 +375,6 @@ Members are listed in alphabetical order. Members are free to use the full name,
 
 ### Maintainers team
 
-- [Arend van Beelen @arendjr](https://github.com/arendjr)
 - [Dani Guardiola @DaniGuardiola](https://github.com/DaniGuardiola)
 - [Madeline Gurriarán @SuperchupuDev](https://github.com/SuperchupuDev)
 - [Takayuki Maeda @TaKO8Ki](https://github.com/TaKO8Ki)

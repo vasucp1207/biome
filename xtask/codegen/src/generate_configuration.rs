@@ -164,7 +164,7 @@ pub(crate) fn generate_rules_configuration(mode: Mode) -> Result<()> {
 
         impl DeserializableValidator for Rules {
             fn validate(
-                &self,
+                &mut self,
                 _name: &str,
                 range: TextRange,
                 diagnostics: &mut Vec<DeserializationDiagnostic>,
@@ -413,7 +413,7 @@ fn generate_struct(group: &str, rules: &BTreeMap<&'static str, RuleMetadata>) ->
         #[derive(Clone, Debug, Default, Deserialize, Deserializable, Eq, Merge, PartialEq, Serialize)]
         #[deserializable(with_validator)]
         #[cfg_attr(feature = "schema", derive(JsonSchema))]
-        #[serde(rename_all = "camelCase", default)]
+        #[serde(rename_all = "camelCase", default, deny_unknown_fields)]
         /// A list of rules that belong to this group
         pub struct #group_struct_name {
             /// It enables the recommended rules for this group
@@ -429,7 +429,7 @@ fn generate_struct(group: &str, rules: &BTreeMap<&'static str, RuleMetadata>) ->
 
         impl DeserializableValidator for #group_struct_name {
             fn validate(
-                &self,
+                &mut self,
                 _name: &str,
                 range: TextRange,
                 diagnostics: &mut Vec<DeserializationDiagnostic>,

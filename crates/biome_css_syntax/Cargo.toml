@@ -8,12 +8,17 @@ keywords.workspace   = true
 license.workspace    = true
 name                 = "biome_css_syntax"
 repository.workspace = true
-version              = "0.4.0"
+version              = "0.5.1"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 biome_rowan = { workspace = true }
+schemars    = { workspace = true, optional = true }
+serde       = { workspace = true, features = ["derive"] }
+
+[features]
+schema = ["schemars", "biome_rowan/serde"]
 
 [lints]
 workspace = true

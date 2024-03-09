@@ -26,11 +26,11 @@ test.js internalError/io  INTERNAL  ━━━━━━━━━━━━━━�
 ```
 
 ```block
-Formatted 1 file(s) in <TIME>
+Formatted 1 file in <TIME>. No fixes needed.
 ```
 
 ```block
-Skipped 1 file(s)
+Skipped 1 file.
 ```
 
 

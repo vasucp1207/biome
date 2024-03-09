@@ -2,11 +2,7 @@
 title: useFilenamingConvention (since v1.5.0)
 ---
 
-**Diagnostic Category: `lint/nursery/useFilenamingConvention`**
-
-:::caution
-This rule is part of the [nursery](/linter/rules/#nursery) group.
-:::
+**Diagnostic Category: `lint/style/useFilenamingConvention`**
 
 Inspired from: <a href="https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/filename-case.md" target="_blank"><code>filename-case</code></a>
 
@@ -56,7 +52,9 @@ For instance,  when the option is set to `true`, `café` or `안녕하세요` wi
 When the option is set to `false`, anames may include non-ASCII characters.
 `café` and `안녕하세요` are so valid.
 
-Default: `true`
+Default: `false`
+
+**This option will be turned on by default in Biome 2.0.**
 
 ### filenameCases
 

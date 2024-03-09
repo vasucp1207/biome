@@ -13,12 +13,16 @@ pub(crate) fn check_file<'ctx>(
 ) -> FileResult {
     let mut has_errors = false;
     let mut workspace_file = WorkspaceFile::new(ctx, path)?;
+    let mut changed = false;
     tracing::info_span!("Process check", path =? workspace_file.path.display()).in_scope(
         move || {
             if file_features.supports_lint() {
                 let lint_result = lint_with_guard(ctx, &mut workspace_file);
                 match lint_result {
                     Ok(status) => {
+                        if status.is_changed() {
+                            changed = true
+                        }
                         if let FileStatus::Message(msg) = status {
                             if msg.is_error() {
                                 has_errors = true
@@ -36,6 +40,9 @@ pub(crate) fn check_file<'ctx>(
                 let organize_imports_result = organize_imports_with_guard(ctx, &mut workspace_file);
                 match organize_imports_result {
                     Ok(status) => {
+                        if status.is_changed() {
+                            changed = true
+                        }
                         if let FileStatus::Message(msg) = status {
                             if msg.is_error() {
                                 has_errors = true
@@ -54,6 +61,9 @@ pub(crate) fn check_file<'ctx>(
                 let format_result = format_with_guard(ctx, &mut workspace_file);
                 match format_result {
                     Ok(status) => {
+                        if status.is_changed() {
+                            changed = true
+                        }
                         if let FileStatus::Message(msg) = status {
                             if msg.is_error() {
                                 has_errors = true
@@ -70,8 +80,10 @@ pub(crate) fn check_file<'ctx>(
 
             if has_errors {
                 Ok(FileStatus::Message(Message::Failure))
+            } else if changed {
+                Ok(FileStatus::Changed)
             } else {
-                Ok(FileStatus::Success)
+                Ok(FileStatus::Unchanged)
             }
         },
     )

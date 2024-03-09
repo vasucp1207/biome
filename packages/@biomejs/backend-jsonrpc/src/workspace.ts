@@ -2,10 +2,10 @@
 import type { Transport } from "./transport";
 export interface SupportsFeatureParams {
 	feature: FeatureName[];
-	path: RomePath;
+	path: BiomePath;
 }
 export type FeatureName = "Format" | "Lint" | "OrganizeImports";
-export interface RomePath {
+export interface BiomePath {
 	path: string;
 }
 export interface SupportsFeatureResult {
@@ -389,6 +389,10 @@ export interface PartialJsonFormatter {
 	 * What's the max width of a line applied to JSON (and its super languages) files. Defaults to 80.
 	 */
 	lineWidth?: LineWidth;
+	/**
+	 * Print trailing commas wherever possible in multi-line comma-separated syntactic structures. Defaults to "none".
+	 */
+	trailingCommas?: TrailingCommas;
 }
 /**
  * Options that changes how the JSON parser behaves
@@ -464,6 +468,7 @@ export type Semicolons = "always" | "asNeeded";
  * Print trailing commas wherever possible in multi-line comma-separated syntactic structures.
  */
 export type TrailingComma = "all" | "es5" | "none";
+export type TrailingCommas = "none" | "all";
 /**
  * A list of rules that belong to this group
  */
@@ -610,6 +615,10 @@ export interface Complexity {
 	 */
 	noBannedTypes?: RuleConfiguration_for_Null;
 	/**
+	 * Disallow empty type parameters in type aliases and interfaces.
+	 */
+	noEmptyTypeParameters?: RuleConfiguration_for_Null;
+	/**
 	 * Disallow functions that exceed a given Cognitive Complexity score.
 	 */
 	noExcessiveCognitiveComplexity?: RuleConfiguration_for_ComplexityOptions;
@@ -653,6 +662,10 @@ export interface Complexity {
 	 * Disallow unnecessary labels.
 	 */
 	noUselessLabel?: RuleConfiguration_for_Null;
+	/**
+	 * Disallow unnecessary nested block statements.
+	 */
+	noUselessLoneBlockStatements?: RuleConfiguration_for_Null;
 	/**
 	 * Disallow renaming import, export, and destructured assignments to the same name.
 	 */
@@ -759,6 +772,10 @@ export interface Correctness {
 	 */
 	noInvalidNewBuiltin?: RuleConfiguration_for_Null;
 	/**
+	 * Disallow the use of variables and function parameters before their declaration
+	 */
+	noInvalidUseBeforeDeclaration?: RuleConfiguration_for_Null;
+	/**
 	 * Disallow new operators with the Symbol object.
 	 */
 	noNewSymbol?: RuleConfiguration_for_Null;
@@ -815,9 +832,17 @@ export interface Correctness {
 	 */
 	noUnsafeOptionalChaining?: RuleConfiguration_for_Null;
 	/**
+	 * Disallow unused imports.
+	 */
+	noUnusedImports?: RuleConfiguration_for_Null;
+	/**
 	 * Disallow unused labels.
 	 */
 	noUnusedLabels?: RuleConfiguration_for_Null;
+	/**
+	 * Disallow unused private class members
+	 */
+	noUnusedPrivateClassMembers?: RuleConfiguration_for_Null;
 	/**
 	 * Disallow unused variables.
 	 */
@@ -864,6 +889,10 @@ export interface Nursery {
 	 */
 	all?: boolean;
 	/**
+	 * Disallow the use of barrel file.
+	 */
+	noBarrelFile?: RuleConfiguration_for_Null;
+	/**
 	 * Disallow the use of console.
 	 */
 	noConsole?: RuleConfiguration_for_Null;
@@ -872,33 +901,21 @@ export interface Nursery {
 	 */
 	noDuplicateJsonKeys?: RuleConfiguration_for_Null;
 	/**
-	 * Disallow empty block statements and static blocks.
+	 * A describe block should not contain duplicate hooks.
 	 */
-	noEmptyBlockStatements?: RuleConfiguration_for_Null;
+	noDuplicateTestHooks?: RuleConfiguration_for_Null;
 	/**
-	 * Disallow empty type parameters in type aliases and interfaces.
+	 * This rule enforces a maximum depth to nested describe() in test files.
 	 */
-	noEmptyTypeParameters?: RuleConfiguration_for_Null;
+	noExcessiveNestedTestSuites?: RuleConfiguration_for_Null;
+	/**
+	 * Disallow using export or module.exports in files containing tests
+	 */
+	noExportsInTest?: RuleConfiguration_for_Null;
 	/**
 	 * Disallow focused tests.
 	 */
 	noFocusedTests?: RuleConfiguration_for_Null;
-	/**
-	 * Disallow assignments to native objects and read-only global variables.
-	 */
-	noGlobalAssign?: RuleConfiguration_for_Null;
-	/**
-	 * Disallow the use of global eval().
-	 */
-	noGlobalEval?: RuleConfiguration_for_Null;
-	/**
-	 * Disallow the use of variables and function parameters before their declaration
-	 */
-	noInvalidUseBeforeDeclaration?: RuleConfiguration_for_Null;
-	/**
-	 * Disallow characters made with multiple code points in character class syntax.
-	 */
-	noMisleadingCharacterClass?: RuleConfiguration_for_Null;
 	/**
 	 * Disallow the use of namespace imports.
 	 */
@@ -916,29 +933,17 @@ export interface Nursery {
 	 */
 	noRestrictedImports?: RuleConfiguration_for_RestrictedImportsOptions;
 	/**
+	 * It detects possible "wrong" semicolons inside JSX elements.
+	 */
+	noSemicolonInJsx?: RuleConfiguration_for_Null;
+	/**
 	 * Disallow disabled tests.
 	 */
 	noSkippedTests?: RuleConfiguration_for_Null;
 	/**
-	 * Disallow then property.
-	 */
-	noThenProperty?: RuleConfiguration_for_Null;
-	/**
 	 * Disallow the use of dependencies that aren't specified in the package.json.
 	 */
 	noUndeclaredDependencies?: RuleConfiguration_for_Null;
-	/**
-	 * Disallow unused imports.
-	 */
-	noUnusedImports?: RuleConfiguration_for_Null;
-	/**
-	 * Disallow unused private class members
-	 */
-	noUnusedPrivateClassMembers?: RuleConfiguration_for_Null;
-	/**
-	 * Disallow unnecessary nested block statements.
-	 */
-	noUselessLoneBlockStatements?: RuleConfiguration_for_Null;
 	/**
 	 * Disallow ternary operators when simpler alternatives exist.
 	 */
@@ -948,53 +953,17 @@ export interface Nursery {
 	 */
 	recommended?: boolean;
 	/**
-	 * Ensure async functions utilize await.
-	 */
-	useAwait?: RuleConfiguration_for_Null;
-	/**
-	 * Require consistently using either T[] or Array<T>
-	 */
-	useConsistentArrayType?: RuleConfiguration_for_ConsistentArrayTypeOptions;
-	/**
-	 * Promotes the use of export type for types.
-	 */
-	useExportType?: RuleConfiguration_for_Null;
-	/**
-	 * Enforce naming conventions for JavaScript and TypeScript filenames.
-	 */
-	useFilenamingConvention?: RuleConfiguration_for_FilenamingConventionOptions;
-	/**
-	 * This rule recommends a for-of loop when in a for loop, the index used to extract an item from the iterated array.
-	 */
-	useForOf?: RuleConfiguration_for_Null;
-	/**
-	 * Enforce the use of import type when an import only has specifiers with type qualifier.
-	 */
-	useGroupedTypeImport?: RuleConfiguration_for_Null;
-	/**
 	 * Disallows package private imports.
 	 */
 	useImportRestrictions?: RuleConfiguration_for_Null;
 	/**
-	 * Promotes the use of import type for types.
+	 * Disallow missing key props in iterators/collection literals.
 	 */
-	useImportType?: RuleConfiguration_for_Null;
+	useJsxKeyInIterable?: RuleConfiguration_for_Null;
 	/**
 	 * Promotes the usage of node:assert/strict over node:assert.
 	 */
 	useNodeAssertStrict?: RuleConfiguration_for_Null;
-	/**
-	 * Enforces using the node: protocol for Node.js builtin modules.
-	 */
-	useNodejsImportProtocol?: RuleConfiguration_for_Null;
-	/**
-	 * Use the Number properties instead of global ones.
-	 */
-	useNumberNamespace?: RuleConfiguration_for_Null;
-	/**
-	 * Enforce using function types instead of object type with call signatures.
-	 */
-	useShorthandFunctionType?: RuleConfiguration_for_Null;
 	/**
 	 * Enforce the sorting of CSS utility classes.
 	 */
@@ -1037,6 +1006,10 @@ export interface Security {
 	 * Report when a DOM element or a component uses both children and dangerouslySetInnerHTML prop.
 	 */
 	noDangerouslySetInnerHtmlWithChildren?: RuleConfiguration_for_Null;
+	/**
+	 * Disallow the use of global eval().
+	 */
+	noGlobalEval?: RuleConfiguration_for_Null;
 	/**
 	 * It enables the recommended rules for this group
 	 */
@@ -1127,6 +1100,10 @@ export interface Style {
 	 */
 	useCollapsedElseIf?: RuleConfiguration_for_Null;
 	/**
+	 * Require consistently using either T[] or Array<T>
+	 */
+	useConsistentArrayType?: RuleConfiguration_for_ConsistentArrayTypeOptions;
+	/**
 	 * Require const declarations for variables that are never reassigned after declared.
 	 */
 	useConst?: RuleConfiguration_for_Null;
@@ -1143,9 +1120,25 @@ export interface Style {
 	 */
 	useExponentiationOperator?: RuleConfiguration_for_Null;
 	/**
+	 * Promotes the use of export type for types.
+	 */
+	useExportType?: RuleConfiguration_for_Null;
+	/**
+	 * Enforce naming conventions for JavaScript and TypeScript filenames.
+	 */
+	useFilenamingConvention?: RuleConfiguration_for_FilenamingConventionOptions;
+	/**
+	 * This rule recommends a for-of loop when in a for loop, the index used to extract an item from the iterated array.
+	 */
+	useForOf?: RuleConfiguration_for_Null;
+	/**
 	 * This rule enforces the use of <>...</> over <Fragment>...</Fragment>.
 	 */
 	useFragmentSyntax?: RuleConfiguration_for_Null;
+	/**
+	 * Promotes the use of import type for types.
+	 */
+	useImportType?: RuleConfiguration_for_Null;
 	/**
 	 * Require all enum members to be literal values.
 	 */
@@ -1154,6 +1147,14 @@ export interface Style {
 	 * Enforce naming conventions for everything across a codebase.
 	 */
 	useNamingConvention?: RuleConfiguration_for_NamingConventionOptions;
+	/**
+	 * Enforces using the node: protocol for Node.js builtin modules.
+	 */
+	useNodejsImportProtocol?: RuleConfiguration_for_Null;
+	/**
+	 * Use the Number properties instead of global ones.
+	 */
+	useNumberNamespace?: RuleConfiguration_for_Null;
 	/**
 	 * Disallow parseInt() and Number.parseInt() in favor of binary, octal, and hexadecimal literals
 	 */
@@ -1170,6 +1171,10 @@ export interface Style {
 	 * Require assignment operator shorthand where possible.
 	 */
 	useShorthandAssign?: RuleConfiguration_for_Null;
+	/**
+	 * Enforce using function types instead of object type with call signatures.
+	 */
+	useShorthandFunctionType?: RuleConfiguration_for_Null;
 	/**
 	 * Enforces switch clauses have a single statement, emits a quick fix wrapping the statements in a block.
 	 */
@@ -1276,6 +1281,10 @@ export interface Suspicious {
 	 */
 	noDuplicateParameters?: RuleConfiguration_for_Null;
 	/**
+	 * Disallow empty block statements and static blocks.
+	 */
+	noEmptyBlockStatements?: RuleConfiguration_for_Null;
+	/**
 	 * Disallow the declaration of empty interfaces.
 	 */
 	noEmptyInterface?: RuleConfiguration_for_Null;
@@ -1296,6 +1305,10 @@ export interface Suspicious {
 	 */
 	noFunctionAssign?: RuleConfiguration_for_Null;
 	/**
+	 * Disallow assignments to native objects and read-only global variables.
+	 */
+	noGlobalAssign?: RuleConfiguration_for_Null;
+	/**
 	 * Use Number.isFinite instead of global isFinite.
 	 */
 	noGlobalIsFinite?: RuleConfiguration_for_Null;
@@ -1315,6 +1328,10 @@ export interface Suspicious {
 	 * Disallow labels that share a name with a variable
 	 */
 	noLabelVar?: RuleConfiguration_for_Null;
+	/**
+	 * Disallow characters made with multiple code points in character class syntax.
+	 */
+	noMisleadingCharacterClass?: RuleConfiguration_for_Null;
 	/**
 	 * Enforce proper usage of new and constructor.
 	 */
@@ -1348,6 +1365,10 @@ export interface Suspicious {
 	 */
 	noSparseArray?: RuleConfiguration_for_Null;
 	/**
+	 * Disallow then property.
+	 */
+	noThenProperty?: RuleConfiguration_for_Null;
+	/**
 	 * Disallow unsafe declaration merging between interfaces and classes.
 	 */
 	noUnsafeDeclarationMerging?: RuleConfiguration_for_Null;
@@ -1359,6 +1380,10 @@ export interface Suspicious {
 	 * It enables the recommended rules for this group
 	 */
 	recommended?: boolean;
+	/**
+	 * Ensure async functions utilize await.
+	 */
+	useAwait?: RuleConfiguration_for_Null;
 	/**
 	 * Enforce default clauses in switch statements to be last
 	 */
@@ -1445,18 +1470,18 @@ export type RuleConfiguration_for_DeprecatedHooksOptions =
 export type RuleConfiguration_for_RestrictedImportsOptions =
 	| RulePlainConfiguration
 	| RuleWithOptions_for_RestrictedImportsOptions;
-export type RuleConfiguration_for_ConsistentArrayTypeOptions =
-	| RulePlainConfiguration
-	| RuleWithOptions_for_ConsistentArrayTypeOptions;
-export type RuleConfiguration_for_FilenamingConventionOptions =
-	| RulePlainConfiguration
-	| RuleWithOptions_for_FilenamingConventionOptions;
 export type RuleConfiguration_for_UtilityClassSortingOptions =
 	| RulePlainConfiguration
 	| RuleWithOptions_for_UtilityClassSortingOptions;
 export type RuleConfiguration_for_RestrictedGlobalsOptions =
 	| RulePlainConfiguration
 	| RuleWithOptions_for_RestrictedGlobalsOptions;
+export type RuleConfiguration_for_ConsistentArrayTypeOptions =
+	| RulePlainConfiguration
+	| RuleWithOptions_for_ConsistentArrayTypeOptions;
+export type RuleConfiguration_for_FilenamingConventionOptions =
+	| RulePlainConfiguration
+	| RuleWithOptions_for_FilenamingConventionOptions;
 export type RuleConfiguration_for_NamingConventionOptions =
 	| RulePlainConfiguration
 	| RuleWithOptions_for_NamingConventionOptions;
@@ -1485,14 +1510,6 @@ export interface RuleWithOptions_for_RestrictedImportsOptions {
 	level: RulePlainConfiguration;
 	options: RestrictedImportsOptions;
 }
-export interface RuleWithOptions_for_ConsistentArrayTypeOptions {
-	level: RulePlainConfiguration;
-	options: ConsistentArrayTypeOptions;
-}
-export interface RuleWithOptions_for_FilenamingConventionOptions {
-	level: RulePlainConfiguration;
-	options: FilenamingConventionOptions;
-}
 export interface RuleWithOptions_for_UtilityClassSortingOptions {
 	level: RulePlainConfiguration;
 	options: UtilityClassSortingOptions;
@@ -1500,6 +1517,14 @@ export interface RuleWithOptions_for_UtilityClassSortingOptions {
 export interface RuleWithOptions_for_RestrictedGlobalsOptions {
 	level: RulePlainConfiguration;
 	options: RestrictedGlobalsOptions;
+}
+export interface RuleWithOptions_for_ConsistentArrayTypeOptions {
+	level: RulePlainConfiguration;
+	options: ConsistentArrayTypeOptions;
+}
+export interface RuleWithOptions_for_FilenamingConventionOptions {
+	level: RulePlainConfiguration;
+	options: FilenamingConventionOptions;
 }
 export interface RuleWithOptions_for_NamingConventionOptions {
 	level: RulePlainConfiguration;
@@ -1523,9 +1548,9 @@ export interface ComplexityOptions {
  */
 export interface HooksOptions {
 	/**
-	 * List of safe hooks
+	 * List of hooks of which the dependencies should be validated.
 	 */
-	hooks: Hooks[];
+	hooks: Hook[];
 }
 /**
  * Options for the `useHookAtTopLevel` rule have been deprecated, since we now use the React hook naming convention to determine whether a function is a hook.
@@ -1539,6 +1564,25 @@ export interface RestrictedImportsOptions {
 	 * A list of names that should trigger the rule
 	 */
 	paths: {};
+}
+export interface UtilityClassSortingOptions {
+	/**
+	 * Additional attributes that will be sorted.
+	 */
+	attributes?: string[];
+	/**
+	 * Names of the functions or tagged templates that will be sorted.
+	 */
+	functions?: string[];
+}
+/**
+ * Options for the rule `noRestrictedGlobals`.
+ */
+export interface RestrictedGlobalsOptions {
+	/**
+	 * A list of names that should trigger the rule
+	 */
+	deniedGlobals: string[];
 }
 export interface ConsistentArrayTypeOptions {
 	syntax: ConsistentArrayType;
@@ -1560,25 +1604,6 @@ export interface FilenamingConventionOptions {
 	 */
 	strictCase: boolean;
 }
-export interface UtilityClassSortingOptions {
-	/**
-	 * Additional attributes that will be sorted.
-	 */
-	attributes?: string[];
-	/**
-	 * Names of the functions or tagged templates that will be sorted.
-	 */
-	functions?: string[];
-}
-/**
- * Options for the rule `noRestrictedGlobals`.
- */
-export interface RestrictedGlobalsOptions {
-	/**
-	 * A list of names that should trigger the rule
-	 */
-	deniedGlobals: string[];
-}
 /**
  * Rule's options.
  */
@@ -1596,21 +1621,31 @@ export interface NamingConventionOptions {
 	 */
 	strictCase: boolean;
 }
-export interface Hooks {
+export interface Hook {
 	/**
 	* The "position" of the closure function, starting from zero.
 
-### Example 
+For example, for React's `useEffect()` hook, the closure index is 0. 
 	 */
 	closureIndex?: number;
 	/**
-	 * The "position" of the array of dependencies, starting from zero.
+	* The "position" of the array of dependencies, starting from zero.
+
+For example, for React's `useEffect()` hook, the dependencies index is 1. 
 	 */
 	dependenciesIndex?: number;
 	/**
-	 * The name of the hook
+	 * The name of the hook.
 	 */
 	name: string;
+	/**
+	* Whether the result of the hook is stable.
+
+Set to `true` to mark the identity of the hook's return value as stable, or use a number/an array of numbers to mark the "positions" in the return array as stable.
+
+For example, for React's `useRef()` hook the value would be `true`, while for `useState()` it would be `[1]`. 
+	 */
+	stableResult: StableHookResult;
 }
 export type ConsistentArrayType = "shorthand" | "generic";
 export type FilenameCases = FilenameCase[];
@@ -1618,6 +1653,7 @@ export type FilenameCases = FilenameCase[];
  * Supported cases for TypeScript `enum` member names.
  */
 export type EnumMemberCase = "PascalCase" | "CONSTANT_CASE" | "camelCase";
+export type StableHookResult = "None" | "Identity" | { Indices: number[] };
 /**
  * Supported cases for TypeScript `enum` member names.
  */
@@ -1628,70 +1664,99 @@ export type FilenameCase =
 	| "PascalCase"
 	| "snake_case";
 export interface UpdateProjectParams {
-	path: RomePath;
+	path: BiomePath;
 }
 export interface OpenProjectParams {
 	content: string;
-	path: RomePath;
+	path: BiomePath;
 	version: number;
 }
 export interface OpenFileParams {
 	content: string;
-	language_hint?: Language;
-	path: RomePath;
+	document_file_source?: DocumentFileSource;
+	path: BiomePath;
 	version: number;
 }
-/**
- * Supported languages by Biome
- */
+export type DocumentFileSource =
+	| "Unknown"
+	| { Js: JsFileSource }
+	| { Json: JsonFileSource }
+	| { Css: CssFileSource };
+export interface JsFileSource {
+	/**
+	 * Used to mark if the source is being used for an Astro, Svelte or Vue file
+	 */
+	embedding_kind: EmbeddingKind;
+	language: Language;
+	module_kind: ModuleKind;
+	variant: LanguageVariant;
+	version: LanguageVersion;
+}
+export interface JsonFileSource {
+	allow_trailing_comma: boolean;
+	variant: JsonVariant;
+}
+export interface CssFileSource {
+	variant: CssVariant;
+}
+export type EmbeddingKind = "Astro" | "Vue" | "Svelte" | "None";
 export type Language =
-	| "Astro"
-	| "Vue"
-	| "Svelte"
 	| "JavaScript"
-	| "JavaScriptReact"
-	| "TypeScript"
-	| "TypeScriptReact"
-	| "Json"
-	| "Jsonc"
-	| "Css"
-	| "Unknown";
+	| { TypeScript: { definition_file: boolean } };
+/**
+ * Is the source file an ECMAScript Module or Script. Changes the parsing semantic.
+ */
+export type ModuleKind = "Script" | "Module";
+export type LanguageVariant = "Standard" | "StandardRestricted" | "Jsx";
+/**
+	* Enum of the different ECMAScript standard versions. The versions are ordered in increasing order; The newest version comes last.
+
+Defaults to the latest stable ECMAScript standard. 
+	 */
+export type LanguageVersion = "ES2022" | "ESNext";
+export type JsonVariant = "Standard" | "Jsonc";
+/**
+	* The style of CSS contained in the file.
+
+Currently, Biome only supports plain CSS, and aims to be compatible with the latest Recommendation level standards. 
+	 */
+export type CssVariant = "Standard";
 export interface ChangeFileParams {
 	content: string;
-	path: RomePath;
+	path: BiomePath;
 	version: number;
 }
 export interface CloseFileParams {
-	path: RomePath;
+	path: BiomePath;
 }
 export interface GetSyntaxTreeParams {
-	path: RomePath;
+	path: BiomePath;
 }
 export interface GetSyntaxTreeResult {
 	ast: string;
 	cst: string;
 }
 export interface OrganizeImportsParams {
-	path: RomePath;
+	path: BiomePath;
 }
 export interface OrganizeImportsResult {
 	code: string;
 }
 export interface GetFileContentParams {
-	path: RomePath;
+	path: BiomePath;
 }
 export interface GetControlFlowGraphParams {
 	cursor: TextSize;
-	path: RomePath;
+	path: BiomePath;
 }
 export type TextSize = number;
 export interface GetFormatterIRParams {
-	path: RomePath;
+	path: BiomePath;
 }
 export interface PullDiagnosticsParams {
 	categories: RuleCategories;
 	max_diagnostics: number;
-	path: RomePath;
+	path: BiomePath;
 }
 export type RuleCategories = RuleCategory[];
 export type RuleCategory = "Syntax" | "Lint" | "Action" | "Transformation";
@@ -1752,6 +1817,7 @@ export type Category =
 	| "lint/a11y/useValidAriaValues"
 	| "lint/a11y/useValidLang"
 	| "lint/complexity/noBannedTypes"
+	| "lint/complexity/noEmptyTypeParameters"
 	| "lint/complexity/noExcessiveCognitiveComplexity"
 	| "lint/complexity/noExtraBooleanCast"
 	| "lint/complexity/noForEach"
@@ -1763,6 +1829,7 @@ export type Category =
 	| "lint/complexity/noUselessEmptyExport"
 	| "lint/complexity/noUselessFragments"
 	| "lint/complexity/noUselessLabel"
+	| "lint/complexity/noUselessLoneBlockStatements"
 	| "lint/complexity/noUselessRename"
 	| "lint/complexity/noUselessSwitchCase"
 	| "lint/complexity/noUselessThisAlias"
@@ -1786,6 +1853,7 @@ export type Category =
 	| "lint/correctness/noInnerDeclarations"
 	| "lint/correctness/noInvalidConstructorSuper"
 	| "lint/correctness/noInvalidNewBuiltin"
+	| "lint/correctness/noInvalidUseBeforeDeclaration"
 	| "lint/correctness/noNewSymbol"
 	| "lint/correctness/noNonoctalDecimalEscape"
 	| "lint/correctness/noPrecisionLoss"
@@ -1800,7 +1868,9 @@ export type Category =
 	| "lint/correctness/noUnreachableSuper"
 	| "lint/correctness/noUnsafeFinally"
 	| "lint/correctness/noUnsafeOptionalChaining"
+	| "lint/correctness/noUnusedImports"
 	| "lint/correctness/noUnusedLabels"
+	| "lint/correctness/noUnusedPrivateClassMembers"
 	| "lint/correctness/noUnusedVariables"
 	| "lint/correctness/noVoidElementsWithChildren"
 	| "lint/correctness/noVoidTypeReturn"
@@ -1810,45 +1880,32 @@ export type Category =
 	| "lint/correctness/useValidForDirection"
 	| "lint/correctness/useYield"
 	| "lint/nursery/noApproximativeNumericConstant"
+	| "lint/nursery/noBarrelFile"
 	| "lint/nursery/noConsole"
 	| "lint/nursery/noDuplicateJsonKeys"
-	| "lint/nursery/noEmptyBlockStatements"
-	| "lint/nursery/noEmptyTypeParameters"
+	| "lint/nursery/noDuplicateTestHooks"
+	| "lint/nursery/noExcessiveNestedTestSuites"
+	| "lint/nursery/noExportsInTest"
 	| "lint/nursery/noFocusedTests"
-	| "lint/nursery/noGlobalAssign"
-	| "lint/nursery/noGlobalEval"
-	| "lint/nursery/noInvalidUseBeforeDeclaration"
-	| "lint/nursery/noMisleadingCharacterClass"
 	| "lint/nursery/noNamespaceImport"
 	| "lint/nursery/noNodejsModules"
 	| "lint/nursery/noReExportAll"
 	| "lint/nursery/noRestrictedImports"
+	| "lint/nursery/noSemicolonInJsx"
 	| "lint/nursery/noSkippedTests"
-	| "lint/nursery/noThenProperty"
 	| "lint/nursery/noTypeOnlyImportAttributes"
 	| "lint/nursery/noUndeclaredDependencies"
-	| "lint/nursery/noUnusedImports"
-	| "lint/nursery/noUnusedPrivateClassMembers"
-	| "lint/nursery/noUselessLoneBlockStatements"
 	| "lint/nursery/noUselessTernary"
-	| "lint/nursery/useAwait"
 	| "lint/nursery/useBiomeSuppressionComment"
-	| "lint/nursery/useConsistentArrayType"
-	| "lint/nursery/useExportType"
-	| "lint/nursery/useFilenamingConvention"
-	| "lint/nursery/useForOf"
-	| "lint/nursery/useGroupedTypeImport"
 	| "lint/nursery/useImportRestrictions"
-	| "lint/nursery/useImportType"
+	| "lint/nursery/useJsxKeyInIterable"
 	| "lint/nursery/useNodeAssertStrict"
-	| "lint/nursery/useNodejsImportProtocol"
-	| "lint/nursery/useNumberNamespace"
-	| "lint/nursery/useShorthandFunctionType"
 	| "lint/nursery/useSortedClasses"
 	| "lint/performance/noAccumulatingSpread"
 	| "lint/performance/noDelete"
 	| "lint/security/noDangerouslySetInnerHtml"
 	| "lint/security/noDangerouslySetInnerHtmlWithChildren"
+	| "lint/security/noGlobalEval"
 	| "lint/style/noArguments"
 	| "lint/style/noCommaOperator"
 	| "lint/style/noDefaultExport"
@@ -1867,17 +1924,25 @@ export type Category =
 	| "lint/style/useAsConstAssertion"
 	| "lint/style/useBlockStatements"
 	| "lint/style/useCollapsedElseIf"
+	| "lint/style/useConsistentArrayType"
 	| "lint/style/useConst"
 	| "lint/style/useDefaultParameterLast"
 	| "lint/style/useEnumInitializers"
 	| "lint/style/useExponentiationOperator"
+	| "lint/style/useExportType"
+	| "lint/style/useFilenamingConvention"
+	| "lint/style/useForOf"
 	| "lint/style/useFragmentSyntax"
+	| "lint/style/useImportType"
 	| "lint/style/useLiteralEnumMembers"
 	| "lint/style/useNamingConvention"
+	| "lint/style/useNodejsImportProtocol"
+	| "lint/style/useNumberNamespace"
 	| "lint/style/useNumericLiterals"
 	| "lint/style/useSelfClosingElements"
 	| "lint/style/useShorthandArrayType"
 	| "lint/style/useShorthandAssign"
+	| "lint/style/useShorthandFunctionType"
 	| "lint/style/useSingleCaseStatement"
 	| "lint/style/useSingleVarDeclarator"
 	| "lint/style/useTemplate"
@@ -1902,16 +1967,19 @@ export type Category =
 	| "lint/suspicious/noDuplicateJsxProps"
 	| "lint/suspicious/noDuplicateObjectKeys"
 	| "lint/suspicious/noDuplicateParameters"
+	| "lint/suspicious/noEmptyBlockStatements"
 	| "lint/suspicious/noEmptyInterface"
 	| "lint/suspicious/noExplicitAny"
 	| "lint/suspicious/noExtraNonNullAssertion"
 	| "lint/suspicious/noFallthroughSwitchClause"
 	| "lint/suspicious/noFunctionAssign"
+	| "lint/suspicious/noGlobalAssign"
 	| "lint/suspicious/noGlobalIsFinite"
 	| "lint/suspicious/noGlobalIsNan"
 	| "lint/suspicious/noImplicitAnyLet"
 	| "lint/suspicious/noImportAssign"
 	| "lint/suspicious/noLabelVar"
+	| "lint/suspicious/noMisleadingCharacterClass"
 	| "lint/suspicious/noMisleadingInstantiator"
 	| "lint/suspicious/noMisrefactoredShorthandAssign"
 	| "lint/suspicious/noPrototypeBuiltins"
@@ -1920,8 +1988,10 @@ export type Category =
 	| "lint/suspicious/noSelfCompare"
 	| "lint/suspicious/noShadowRestrictedNames"
 	| "lint/suspicious/noSparseArray"
+	| "lint/suspicious/noThenProperty"
 	| "lint/suspicious/noUnsafeDeclarationMerging"
 	| "lint/suspicious/noUnsafeNegation"
+	| "lint/suspicious/useAwait"
 	| "lint/suspicious/useDefaultSwitchClauseLast"
 	| "lint/suspicious/useGetterReturn"
 	| "lint/suspicious/useIsArray"
@@ -2051,7 +2121,7 @@ export interface BacktraceSymbol {
 	name?: string;
 }
 export interface PullActionsParams {
-	path: RomePath;
+	path: BiomePath;
 	range: TextRange;
 }
 export interface PullActionsResult {
@@ -2104,7 +2174,7 @@ export type SourceActionKind =
  */
 export type Applicability = "Always" | "MaybeIncorrect";
 export interface FormatFileParams {
-	path: RomePath;
+	path: BiomePath;
 }
 export interface Printed {
 	code: string;
@@ -2126,16 +2196,16 @@ export interface SourceMarker {
 	source: TextSize;
 }
 export interface FormatRangeParams {
-	path: RomePath;
+	path: BiomePath;
 	range: TextRange;
 }
 export interface FormatOnTypeParams {
 	offset: TextSize;
-	path: RomePath;
+	path: BiomePath;
 }
 export interface FixFileParams {
 	fix_file_mode: FixFileMode;
-	path: RomePath;
+	path: BiomePath;
 	should_format: boolean;
 }
 /**
@@ -2172,7 +2242,7 @@ export interface FixAction {
 }
 export interface RenameParams {
 	new_name: string;
-	path: RomePath;
+	path: BiomePath;
 	symbol_at: TextSize;
 }
 export interface RenameResult {
